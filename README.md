@@ -72,14 +72,15 @@ REPL 안에서 사용할 수 있는 명령어:
 
 예:
 
-> !pdf "NGS_Genetic_Testing_Basics.pdf"
-!pdfs "파일1.pdf" "파일2.pdf" ...
+> !pdf "파일_1.pdf"
+!pdfs "파일_1.pdf" "파일_2.pdf" ...
 여러 개의 PDF 파일을 한 번에 로드합니다.
+
 파일명에 공백이 있을 경우 반드시 따옴표(" ")로 감싸야 합니다.
 
 예:
 
-> !pdfs "Distribution of Taste Receptors in Submandibular and von Ebner Salivary Glands.pdf" "NGS_Genetic_Testing_Basics.pdf"
+> !pdfs "파일 1.pdf" "파일_2.pdf"
 
 #### !list
 현재 메모리에 로드된 PDF 파일 목록을 보여줍니다.
@@ -94,7 +95,9 @@ REPL 안에서 사용할 수 있는 명령어:
 사용할 LLM 모델을 변경합니다.
 
 > !model llama-3.3-70b-versatile
+
 exit, quit, 종료
+
 REPL 모드 종료.
 
 ## 🌐 사용 방법 (Web 모드)
@@ -104,9 +107,13 @@ python -m rag_gpt --web
 성공적으로 실행되면:
 
 🌐 웹 인터페이스 시작 (포트: 7860)
+
 웹 인터페이스를 시작합니다...
+
 브라우저에서 http://localhost:7860 으로 접속하세요.
+
 * Running on local URL:  http://0.0.0.0:7860
+
 브라우저에서 다음 주소로 접속합니다:
 
 http://localhost:7860
