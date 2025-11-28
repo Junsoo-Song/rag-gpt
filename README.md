@@ -74,9 +74,7 @@ REPL 안에서 사용할 수 있는 명령어:
 
 > !pdf "파일_1.pdf"
 
-> !pdfs "파일_1.pdf" "파일_2.pdf" ...
-
-> 여러 개의 PDF 파일을 한 번에 로드합니다.
+> !pdfs "파일_1.pdf" "파일_2.pdf" ...여러 개의 PDF 파일을 한 번에 로드합니다.
 
 파일명에 공백이 있을 경우 반드시 따옴표(" ")로 감싸야 합니다.
 
@@ -150,7 +148,8 @@ Temperature 슬라이더: 답변의 창의성 정도 조절
 ~/.rag_gpt/config.json
 예시 내용:
 
-{
+```json
+> {
   "api_key": "",
   "model": "llama-3.3-70b-versatile",
   "temperature": 0.3,
@@ -158,6 +157,7 @@ Temperature 슬라이더: 답변의 창의성 정도 조절
   "chunk_overlap": 50,
   "top_k": 3
 }
+
 여기서:
 
 model: 사용할 Groq LLM 모델 이름
