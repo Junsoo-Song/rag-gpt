@@ -25,35 +25,38 @@ CLI(터미널) 모드와 웹(Web) 인터페이스를 모두 지원합니다.
 ## 📦 설치 방법
 
 ### 1. 저장소 클론
-
+```json
 git clone https://github.com/Junsoo-Song/rag-gpt.git
 
 cd rag-gpt
-
+```
 ### 2. 가상환경 생성 (권장)
-
+```json
 python -m venv venv
 source venv/bin/activate      # Linux / macOS
-
+```
 ### 3. 패키지 설치
-
+```json
 pip install -r requirements.txt
-
+```
 ### 4. Groq API 키 설정
 ### 4.1. .env 파일 생성:
+```json
 cp .env.example .env
-
+```
 ### 4.2. .env 파일 열고 다음과 같이 수정:
+```json
 GROQ_API_KEY=your_groq_api_key_here
+```
 또는, 터미널에서 직접 환경 변수로 설정할 수도 있습니다:
-
+```json
 export GROQ_API_KEY="your_groq_api_key_here"
-
+```
 ## 💻 사용 방법 (CLI 모드)
 ### 1. 기본 REPL 모드 실행
-
+```json
 python -m rag_gpt --repl
-
+```
 실행하면 다음과 같은 안내가 보입니다:
 
 🤖 RAG-GPT REPL 모드
@@ -157,6 +160,7 @@ Temperature 슬라이더: 답변의 창의성 정도 조절
   "chunk_overlap": 50,
   "top_k": 3
 }
+```
 
 여기서:
 
