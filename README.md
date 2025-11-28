@@ -33,7 +33,6 @@ cd rag-gpt
 
 python -m venv venv
 source venv/bin/activate      # Linux / macOS
-# venv\Scripts\activate       # Windows (CMD/PowerShell)
 
 ### 3. 패키지 설치
 
