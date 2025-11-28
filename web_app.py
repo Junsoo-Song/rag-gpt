@@ -1,5 +1,5 @@
 """
-웹 인터페이스 모듈 (Gradio) - messages 형식
+웹 인터페이스 모듈 (Gradio) - 다중 PDF 지원
 """
 import gradio as gr
 from pathlib import Path
@@ -7,11 +7,10 @@ from typing import List, Optional
 import json
 
 class WebInterface:
-    """Gradio 웹 인터페이스"""
+    """Gradio 웹 인터페이스 - 다중 PDF 지원"""
     
     def __init__(self, rag_gpt_instance):
         self.rag = rag_gpt_instance
-        self.current_pdf = None
         
     def create_interface(self):
         """Gradio 인터페이스 생성"""
@@ -22,15 +21,28 @@ class WebInterface:
             with gr.Tab("💬 대화"):
                 with gr.Row():
                     with gr.Column(scale=1):
-                        pdf_file = gr.File(
-                            label="📄 PDF 업로드",
-                            file_types=[".pdf"]
+                        # 다중 파일 업로드 지원
+                        pdf_files = gr.File(
+                            label="📄 PDF 업로드 (여러 개 선택 가능)",
+                            file_types=[".pdf"],
+                            file_count="multiple"
                         )
                         upload_btn = gr.Button("📥 문서 로드", variant="primary")
+                        clear_docs_btn = gr.Button("🗑️ 문서 초기화", variant="secondary")
+                        
                         status = gr.Textbox(
                             label="상태",
                             value="문서를 업로드해주세요.",
-                            interactive=False
+                            interactive=False,
+                            lines=3
+                        )
+                        
+                        # 로드된 PDF 목록
+                        loaded_pdfs = gr.Textbox(
+                            label="📚 로드된 문서",
+                            value="없음",
+                            interactive=False,
+                            lines=5
                         )
                         
                         gr.Markdown("### ⚙️ 설정")
@@ -84,31 +96,67 @@ class WebInterface:
                 ## 사용법
                 
                 1. **PDF 업로드**: 좌측 패널에서 PDF 파일을 선택하고 '문서 로드' 클릭
+                   - **여러 PDF 동시 선택 가능** (Ctrl+클릭 또는 Shift+클릭)
                 2. **질문하기**: 채팅창에 질문을 입력하고 전송
                 3. **세션 저장**: 대화 내용을 저장하려면 '세션 관리' 탭에서 저장
+                
+                ## 기능
+                - 다중 PDF 동시 로드
+                - 문서 출처 표시
+                - 대화 세션 관리
                 """)
             
             # 이벤트 핸들러
-            def process_pdf(file):
-                if file:
-                    try:
+            def process_pdfs(files):
+                """여러 PDF 처리"""
+                if not files:
+                    return "❌ 파일을 선택해주세요.", "없음"
+                
+                try:
+                    # 파일 경로 추출
+                    pdf_paths = []
+                    for file in files:
                         file_path = file.name if hasattr(file, 'name') else file
-                        self.rag.load_pdf(Path(file_path))
-                        self.current_pdf = file_path
-                        return "✅ 문서 로드 완료!"
-                    except Exception as e:
-                        return f"❌ 오류: {str(e)}"
-                return "❌ 파일을 선택해주세요."
+                        pdf_paths.append(Path(file_path))
+                    
+                    # 다중 PDF 로드
+                    results = self.rag.rag_handler.process_multiple_pdfs(pdf_paths)
+                    
+                    # 상태 메시지 생성
+                    status_msg = ""
+                    for success in results["success"]:
+                        status_msg += f"✅ {success['file']}: {success['chunks']}개 청크\n"
+                    
+                    for failed in results["failed"]:
+                        status_msg += f"❌ {failed['file']}: {failed['error']}\n"
+                    
+                    status_msg += f"\n총 {results['total_chunks']}개 청크 로드됨"
+                    
+                    # 로드된 PDF 목록
+                    loaded_list = "\n".join([f"📄 {pdf}" for pdf in self.rag.get_loaded_pdfs()])
+                    if not loaded_list:
+                        loaded_list = "없음"
+                    
+                    return status_msg, loaded_list
+                    
+                except Exception as e:
+                    return f"❌ 오류: {str(e)}", "없음"
+            
+            def clear_documents():
+                """문서 초기화"""
+                self.rag.clear_documents()
+                return "문서가 초기화되었습니다.", "없음"
             
             def chat(message, history):
-                """딕셔너리 형식으로 채팅 처리"""
+                """채팅 처리"""
                 if history is None:
                     history = []
                 
                 if not message or not message.strip():
                     return history, ""
                 
-                if not self.current_pdf:
+                loaded_pdfs = self.rag.get_loaded_pdfs()
+                if not loaded_pdfs:
                     history.append({"role": "user", "content": message})
                     history.append({"role": "assistant", "content": "먼저 PDF를 업로드해주세요."})
                     return history, ""
@@ -189,8 +237,24 @@ class WebInterface:
             def clear_chat():
                 return []
             
+            def get_loaded_pdfs_display():
+                loaded = self.rag.get_loaded_pdfs()
+                if loaded:
+                    return "\n".join([f"📄 {pdf}" for pdf in loaded])
+                return "없음"
+            
             # 이벤트 연결
-            upload_btn.click(process_pdf, inputs=[pdf_file], outputs=[status])
+            upload_btn.click(
+                process_pdfs, 
+                inputs=[pdf_files], 
+                outputs=[status, loaded_pdfs]
+            )
+            clear_docs_btn.click(
+                clear_documents,
+                inputs=None,
+                outputs=[status, loaded_pdfs]
+            )
+            
             submit.click(chat, inputs=[msg, chatbot], outputs=[chatbot, msg])
             msg.submit(chat, inputs=[msg, chatbot], outputs=[chatbot, msg])
             clear.click(clear_chat, inputs=None, outputs=[chatbot])
