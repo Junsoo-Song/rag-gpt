@@ -27,6 +27,7 @@ CLI(터미널) 모드와 웹(Web) 인터페이스를 모두 지원합니다.
 ### 1. 저장소 클론
 
 git clone https://github.com/Junsoo-Song/rag-gpt.git
+
 cd rag-gpt
 
 ### 2. 가상환경 생성 (권장)
