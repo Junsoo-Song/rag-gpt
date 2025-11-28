@@ -164,27 +164,18 @@ Temperature 슬라이더: 답변의 창의성 정도 조절
 
 여기서:
 
-model: 사용할 Groq LLM 모델 이름
-
-temperature: 0.0(매우 보수적) ~ 1.0(매우 창의적)
-
-chunk_size: 문서 청크 크기 (문자 수 기준)
-
-chunk_overlap: 청크 간 겹치는 문자 수
-
-top_k: 검색 시 가져올 상위 청크 개수
+-model: 사용할 Groq LLM 모델 이름
+-temperature: 0.0(매우 보수적) ~ 1.0(매우 창의적)
+-chunk_size: 문서 청크 크기 (문자 수 기준)
+-chunk_overlap: 청크 간 겹치는 문자 수
+-top_k: 검색 시 가져올 상위 청크 개수
 
 ### 🛠️ 기술 스택
-LangChain: LLM 오케스트레이션 및 체인 구성
-
-Groq: ChatGroq를 통한 LLM 호출
-
-FAISS: 문서 벡터 검색 엔진
-
-HuggingFace Embeddings: intfloat/multilingual-e5-small
-
-Gradio: 웹 UI
-
-Rich: 터미널 출력 포맷팅
+-LangChain: LLM 오케스트레이션 및 체인 구성
+-Groq: ChatGroq를 통한 LLM 호출
+-FAISS: 문서 벡터 검색 엔진
+-HuggingFace Embeddings: intfloat/multilingual-e5-small
+-Gradio: 웹 UI
+-Rich: 터미널 출력 포맷팅
 
 
